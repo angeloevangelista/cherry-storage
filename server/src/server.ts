@@ -1,7 +1,12 @@
+/* eslint-disable no-console */
+import 'reflect-metadata';
+
 import express from 'express';
 
-const port = process.env.PORT || 3333;
+import './database';
 
+console.clear();
+const port = process.env.PORT || 3333;
 const app = express();
 
 app.use(express.json());

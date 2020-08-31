@@ -7,10 +7,14 @@
   "author": "Angelo Evangelista <angeloevan.ane@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "dev:server": "ts-node-dev src/server.ts --transpileOnly --ignore node_modules"
+    "dev:server": "ts-node-dev src/server.ts --transpileOnly --ignore node_modules",
+    "typeorm": "node_modules/typeorm/cli.js"
   },
   "dependencies": {
     "express": "^4.17.1",
+    "pg": "^8.3.3",
+    "reflect-metadata": "^0.1.13",
+    "typeorm": "^0.2.25",
     "typescript": "^4.0.2"
   },
   "devDependencies": {

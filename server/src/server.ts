@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 import 'reflect-metadata';
 
+import path from 'path';
 import express, { Request, Response, NextFunction } from 'express';
 import 'express-async-errors';
 
@@ -32,6 +33,11 @@ app.use((err: Error, request: Request, response: Response, _: NextFunction) => {
     message: 'Internal server error.',
   });
 });
+
+app.use(
+  '/public/avatars',
+  express.static(path.resolve(__dirname, '..', 'files', 'avatars')),
+);
 
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port} 🚀`);

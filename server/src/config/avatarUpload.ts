@@ -2,7 +2,7 @@ import path from 'path';
 import multer from 'multer';
 import crypto from 'crypto';
 
-const filesFolder = path.resolve('files', 'avatars');
+const filesFolder = path.resolve(__dirname, '..', '..', 'files', 'avatars');
 
 export default {
   directory: filesFolder,

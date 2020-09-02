@@ -20,6 +20,9 @@ class User {
   @Column()
   email: string;
 
+  @Column()
+  avatar?: string;
+
   @Column({ select: false })
   password: string;
 

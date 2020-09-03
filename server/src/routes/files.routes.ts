@@ -7,6 +7,7 @@ import filesUploadConfig from '../config/filesUpload';
 import File from '../models/File';
 
 import CreateFileService from '../services/CreateFileService';
+import UpdateFileService from '../services/UpdateFileService';
 
 const filesRouter = Router();
 const upload = multer(filesUploadConfig);
@@ -36,5 +37,23 @@ filesRouter.post('/', upload.single('file'), async (request, response) => {
 
   return response.status(201).json(file);
 });
+
+filesRouter.put(
+  '/:file_id',
+  upload.single('file'),
+  async (request, response) => {
+    const { file_id } = request.params;
+
+    const updateFileService = new UpdateFileService();
+
+    const file = await updateFileService.execute({
+      existing_file_id: file_id,
+      uploadedFile: request.file,
+      user_id: request.user.id,
+    });
+
+    return response.json(file);
+  },
+);
 
 export default filesRouter;

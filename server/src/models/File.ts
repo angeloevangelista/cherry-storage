@@ -4,13 +4,13 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
-  OneToMany,
+  ManyToMany,
 } from 'typeorm';
 
-import File from './File';
+import User from './User';
 
-@Entity('users')
-class User {
+@Entity('files')
+class File {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -18,19 +18,13 @@ class User {
   name: string;
 
   @Column()
-  surname: string;
+  original_filename: string;
 
   @Column()
-  email: string;
+  user_id: string;
 
-  @Column()
-  avatar?: string;
-
-  @Column({ select: false })
-  password: string;
-
-  @OneToMany(() => File, (file) => file.user)
-  files: File[];
+  @ManyToMany(() => User, (user) => user.files)
+  user: User;
 
   @CreateDateColumn()
   created_at: Date;
@@ -39,4 +33,4 @@ class User {
   updated_at: Date;
 }
 
-export default User;
+export default File;

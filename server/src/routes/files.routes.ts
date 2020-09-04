@@ -8,6 +8,7 @@ import File from '../models/File';
 
 import CreateFileService from '../services/CreateFileService';
 import UpdateFileService from '../services/UpdateFileService';
+import DeleteFileService from '../services/DeleteFileService';
 
 const filesRouter = Router();
 const upload = multer(filesUploadConfig);
@@ -55,5 +56,18 @@ filesRouter.put(
     return response.json(file);
   },
 );
+
+filesRouter.delete('/:file_id', async (request, response) => {
+  const { file_id } = request.params;
+
+  const deleteFileService = new DeleteFileService();
+
+  await deleteFileService.execute({
+    user_id: request.user.id,
+    file_id,
+  });
+
+  return response.status(204).send();
+});
 
 export default filesRouter;

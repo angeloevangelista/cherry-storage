@@ -53,7 +53,7 @@
 						{
 							"key": "file",
 							"type": "file",
-							"src": "/home/angelo/Desktop/socm-livro.pdf"
+							"src": "/home/angelo/Desktop/socm.pdf"
 						}
 					]
 				},
@@ -64,6 +64,87 @@
 					],
 					"path": [
 						"files"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/home/angelo/Desktop/socm.pdf"
+						}
+					],
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/files/4f8bb56b-0cba-43bd-aaed-7ce99b7aed3c",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"files",
+						"4f8bb56b-0cba-43bd-aaed-7ce99b7aed3c"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/home/angelo/Desktop/socm-livro.pdf"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url}}/files/cbdf3dad-1855-47a0-ac6f-2a83ac338eb1",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"files",
+						"cbdf3dad-1855-47a0-ac6f-2a83ac338eb1"
 					]
 				}
 			},

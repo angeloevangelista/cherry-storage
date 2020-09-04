@@ -23,8 +23,6 @@ storageRouter.get('/:file_id', async (request, response) => {
 
   const filePath = path.join(filesUploadConfig.directory, file.name);
 
-  console.log(file);
-
   return response.sendFile(filePath);
 });
 

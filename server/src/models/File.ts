@@ -4,7 +4,8 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
-  ManyToMany,
+  ManyToOne,
+  JoinColumn,
 } from 'typeorm';
 
 import User from './User';
@@ -23,7 +24,8 @@ class File {
   @Column()
   user_id: string;
 
-  @ManyToMany(() => User, (user) => user.files)
+  @ManyToOne(() => User, (user) => user.files)
+  @JoinColumn({ name: 'user_id' })
   user: User;
 
   @CreateDateColumn()

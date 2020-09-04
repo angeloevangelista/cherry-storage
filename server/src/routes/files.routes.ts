@@ -9,6 +9,7 @@ import File from '../models/File';
 import CreateFileService from '../services/CreateFileService';
 import UpdateFileService from '../services/UpdateFileService';
 import DeleteFileService from '../services/DeleteFileService';
+import FindFileService from '../services/FindFileService';
 
 const filesRouter = Router();
 const upload = multer(filesUploadConfig);
@@ -23,6 +24,19 @@ filesRouter.get('/', async (request, response) => {
   });
 
   return response.json(files);
+});
+
+filesRouter.get('/:file_id', async (request, response) => {
+  const { file_id } = request.params;
+
+  const findFileService = new FindFileService();
+
+  const file = await findFileService.execute({
+    user_id: request.user.id,
+    file_id,
+  });
+
+  return response.json(file);
 });
 
 filesRouter.post('/', upload.single('file'), async (request, response) => {

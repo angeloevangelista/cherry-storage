@@ -138,13 +138,41 @@
 					]
 				},
 				"url": {
-					"raw": "{{base_url}}/files/cbdf3dad-1855-47a0-ac6f-2a83ac338eb1",
+					"raw": "{{base_url}}/files/136b5a51-95e7-4297-a380-161568ad5a2d",
 					"host": [
 						"{{base_url}}"
 					],
 					"path": [
 						"files",
-						"cbdf3dad-1855-47a0-ac6f-2a83ac338eb1"
+						"136b5a51-95e7-4297-a380-161568ad5a2d"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Find",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/files/ea4ed11f-567c-43ff-ad8f-1158a9d42d83",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"files",
+						"ea4ed11f-567c-43ff-ad8f-1158a9d42d83"
 					]
 				}
 			},

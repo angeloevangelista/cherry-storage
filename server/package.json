@@ -8,6 +8,7 @@
   "license": "MIT",
   "scripts": {
     "dev:server": "ts-node-dev src/server.ts --transpile-only --ignore node_modules",
+    "start": "ts-node src/server.ts --transpile-only --ignore node_modules",
     "typeorm": "ts-node node_modules/typeorm/cli.js"
   },
   "dependencies": {

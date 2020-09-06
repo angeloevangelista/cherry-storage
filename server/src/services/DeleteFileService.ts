@@ -1,12 +1,10 @@
-import fs from 'fs';
-import path from 'path';
 import { validate } from 'uuid';
 import { getRepository } from 'typeorm';
 
-import filesUploadConfig from '../config/filesUpload';
-
 import User from '../models/User';
 import File from '../models/File';
+
+import DeleteFileS3Service from './DeleteFileS3Service';
 
 import AppError from '../errors/AppError';
 
@@ -41,17 +39,12 @@ class DeleteFileService {
       throw new AppError('You can delete only your own files.');
     }
 
-    try {
-      const filePath = path.join(filesUploadConfig.directory, file.name);
-      const fileExists = await fs.promises.stat(filePath);
+    const deleteFileS3Service = new DeleteFileS3Service();
 
-      if (fileExists) {
-        await fs.promises.unlink(filePath);
-      }
-    } catch (error) {
-      console.warn('An error occurred while deleting file ❌');
-      console.warn(error);
-    }
+    deleteFileS3Service.execute({
+      fileName: file.name,
+      filePath: 'storage',
+    });
 
     await filesRepository.remove(file);
   }

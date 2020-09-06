@@ -3,7 +3,7 @@ import { getRepository } from 'typeorm';
 import User from '../models/User';
 import File from '../models/File';
 
-import UploadFileE3Service from './UploadFileE3Service';
+import UploadFileS3Service from './UploadFileS3Service';
 
 import AppError from '../errors/AppError';
 
@@ -37,9 +37,9 @@ class CreateFileService {
 
     await filesRepository.save(file);
 
-    const uploadFileE3Service = new UploadFileE3Service();
+    const uploadFileS3Service = new UploadFileS3Service();
 
-    uploadFileE3Service.execute({
+    uploadFileS3Service.execute({
       filePath: 'storage',
       fileName: file.name,
       mimeType: file.mime_type,

@@ -45,6 +45,8 @@ class CreateFileService {
       mimeType: file.mime_type,
     });
 
+    file.url = `${process.env.AWS_S3_URL}/storage/${file.name}`;
+
     return file;
   }
 }

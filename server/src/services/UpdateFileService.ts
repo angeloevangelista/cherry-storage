@@ -72,6 +72,8 @@ class UpdateFileService {
 
     await filesRepository.save(file);
 
+    file.url = `${process.env.AWS_S3_URL}/storage/${file.name}`;
+
     return file;
   }
 }

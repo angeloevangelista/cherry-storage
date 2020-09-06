@@ -26,7 +26,17 @@ class AuthenticateUserService {
       {
         email,
       },
-      { select: ['id', 'password', 'email'] },
+      {
+        select: [
+          'id',
+          'name',
+          'surname',
+          'email',
+          'password',
+          'avatar',
+          'avatar_url',
+        ],
+      },
     );
 
     if (!user) {
@@ -45,6 +55,8 @@ class AuthenticateUserService {
       subject: user.id,
       expiresIn,
     });
+
+    user.avatar_url = `${process.env.AWS_S3_URL}/avatars/${user.avatar}`;
 
     return {
       user,

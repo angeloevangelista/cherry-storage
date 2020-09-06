@@ -29,6 +29,8 @@ class User {
   @Column({ select: false })
   password: string;
 
+  avatar_url: string;
+
   @OneToMany(() => File, (file) => file.user)
   files: File[];
 

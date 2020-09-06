@@ -29,6 +29,10 @@ class FindFileService {
 
     const file = await filesRepository.findOne(file_id);
 
+    if (file) {
+      file.url = `${process.env.AWS_S3_URL}/storage/${file.name}`;
+    }
+
     return file;
   }
 }

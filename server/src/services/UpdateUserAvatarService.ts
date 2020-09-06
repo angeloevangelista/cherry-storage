@@ -44,6 +44,8 @@ class UpdateUserAvatarService {
 
     await usersRepository.save(user);
 
+    user.avatar_url = `${process.env.AWS_S3_URL}/avatars/${user.avatar}`;
+
     return user;
   }
 }

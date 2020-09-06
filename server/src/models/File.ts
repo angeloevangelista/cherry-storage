@@ -27,6 +27,8 @@ class File {
   @Column()
   user_id: string;
 
+  url: string;
+
   @ManyToOne(() => User, (user) => user.files)
   @JoinColumn({ name: 'user_id' })
   user: User;

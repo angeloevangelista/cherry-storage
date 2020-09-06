@@ -18,6 +18,9 @@ class File {
   @Column()
   name: string;
 
+  @Column({ default: 'application/octet-stream' })
+  mime_type: string;
+
   @Column()
   original_filename: string;
 

@@ -45,8 +45,9 @@ filesRouter.post('/', upload.single('file'), async (request, response) => {
   const file = await createFileService.execute({
     user_id: request.user.id,
     uploadedFile: {
-      filename: request.file.filename,
-      originalname: request.file.originalname,
+      fileName: request.file.filename,
+      originalName: request.file.originalname,
+      mimeType: request.file.mimetype,
     },
   });
 

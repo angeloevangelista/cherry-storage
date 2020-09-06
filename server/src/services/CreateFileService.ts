@@ -3,13 +3,16 @@ import { getRepository } from 'typeorm';
 import User from '../models/User';
 import File from '../models/File';
 
+import UploadFileE3Service from './UploadFileE3Service';
+
 import AppError from '../errors/AppError';
 
 interface Request {
   user_id: string;
   uploadedFile: {
-    originalname: string;
-    filename: string;
+    originalName: string;
+    fileName: string;
+    mimeType: string;
   };
 }
 
@@ -20,18 +23,27 @@ class CreateFileService {
     const user = await usersRepository.findOne(user_id);
 
     if (!user) {
-      throw new AppError('only authenticated users can upload files.');
+      throw new AppError('Only authenticated users can upload files.');
     }
 
     const filesRepository = getRepository(File);
 
     const file = filesRepository.create({
       user_id: user.id,
-      name: uploadedFile.filename,
-      original_filename: uploadedFile.originalname,
+      name: uploadedFile.fileName,
+      original_filename: uploadedFile.originalName,
+      mime_type: uploadedFile.mimeType,
     });
 
     await filesRepository.save(file);
+
+    const uploadFileE3Service = new UploadFileE3Service();
+
+    uploadFileE3Service.execute({
+      filePath: 'storage',
+      fileName: file.name,
+      mimeType: file.mime_type,
+    });
 
     return file;
   }

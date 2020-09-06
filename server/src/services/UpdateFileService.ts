@@ -1,12 +1,11 @@
-import fs from 'fs';
-import path from 'path';
 import { validate } from 'uuid';
 import { getRepository } from 'typeorm';
 
-import filesUploadConfig from '../config/filesUpload';
-
 import User from '../models/User';
 import File from '../models/File';
+
+import UpdateFileS3Service from './S3/UpdateFileS3Service';
+import DeleteFileS3Service from './S3/DeleteFileS3Service';
 
 import AppError from '../errors/AppError';
 
@@ -16,6 +15,7 @@ interface Request {
   uploadedFile: {
     originalname: string;
     filename: string;
+    mimetype: string;
   };
 }
 
@@ -49,19 +49,25 @@ class UpdateFileService {
       throw new AppError('You can update only your own files.');
     }
 
-    try {
-      const filePath = path.join(filesUploadConfig.directory, file.name);
-      const fileExists = await fs.promises.stat(filePath);
+    const updateFileS3Service = new UpdateFileS3Service();
 
-      if (fileExists) {
-        await fs.promises.unlink(filePath);
-      }
-    } catch (error) {
-      console.warn('An error occurred while deleting file ❌');
-      console.warn(error);
+    updateFileS3Service.execute({
+      filePath: 'storage',
+      fileName: uploadedFile.filename,
+      mimeType: uploadedFile.mimetype,
+    });
+
+    if (uploadedFile.filename !== file.name) {
+      const deleteFileS3Service = new DeleteFileS3Service();
+
+      deleteFileS3Service.execute({
+        filePath: 'storage',
+        fileName: file.name,
+      });
     }
 
     file.name = uploadedFile.filename;
+    file.mime_type = uploadedFile.mimetype;
     file.original_filename = uploadedFile.originalname;
 
     await filesRepository.save(file);

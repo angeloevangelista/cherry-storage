@@ -53,7 +53,7 @@
 						{
 							"key": "file",
 							"type": "file",
-							"src": "/home/angelo/Desktop/socm.pdf"
+							"src": "/home/angelo/Desktop/profile.png"
 						}
 					]
 				},
@@ -90,7 +90,7 @@
 						{
 							"key": "file",
 							"type": "file",
-							"src": "/home/angelo/Desktop/socm.pdf"
+							"src": "/home/angelo/Desktop/330-14ikb_330-15ikb_330touch-15ikb_330-14ast_330-15ast_ug_pt-br_201803.pdf"
 						}
 					],
 					"options": {
@@ -100,13 +100,13 @@
 					}
 				},
 				"url": {
-					"raw": "{{base_url}}/files/4f8bb56b-0cba-43bd-aaed-7ce99b7aed3c",
+					"raw": "{{base_url}}/files/28b431bb-f7ff-4986-aa03-b32cc5894da9",
 					"host": [
 						"{{base_url}}"
 					],
 					"path": [
 						"files",
-						"4f8bb56b-0cba-43bd-aaed-7ce99b7aed3c"
+						"28b431bb-f7ff-4986-aa03-b32cc5894da9"
 					]
 				}
 			},
@@ -138,13 +138,13 @@
 					]
 				},
 				"url": {
-					"raw": "{{base_url}}/files/136b5a51-95e7-4297-a380-161568ad5a2d",
+					"raw": "{{base_url}}/files/b5181aab-a5c3-4c43-9620-4179ee796b5b",
 					"host": [
 						"{{base_url}}"
 					],
 					"path": [
 						"files",
-						"136b5a51-95e7-4297-a380-161568ad5a2d"
+						"b5181aab-a5c3-4c43-9620-4179ee796b5b"
 					]
 				}
 			},
@@ -166,13 +166,13 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{base_url}}/files/ea4ed11f-567c-43ff-ad8f-1158a9d42d83",
+					"raw": "{{base_url}}/files/a5da430b-31c0-4da8-85b1-a8fc8da031ab",
 					"host": [
 						"{{base_url}}"
 					],
 					"path": [
 						"files",
-						"ea4ed11f-567c-43ff-ad8f-1158a9d42d83"
+						"a5da430b-31c0-4da8-85b1-a8fc8da031ab"
 					]
 				}
 			},

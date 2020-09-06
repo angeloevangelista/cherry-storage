@@ -4,7 +4,7 @@ import { getRepository } from 'typeorm';
 import User from '../models/User';
 import File from '../models/File';
 
-import DeleteFileS3Service from './DeleteFileS3Service';
+import DeleteFileS3Service from './S3/DeleteFileS3Service';
 
 import AppError from '../errors/AppError';
 

@@ -3,8 +3,8 @@ import path from 'path';
 import AWS from 'aws-sdk';
 import S3 from 'aws-sdk/clients/s3';
 
-import S3Config from '../config/S3';
-import filesUploadConfig from '../config/filesUpload';
+import S3Config from '../../config/S3';
+import filesUploadConfig from '../../config/filesUpload';
 
 interface UploadFileS3Params {
   filePath: string;

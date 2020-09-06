@@ -3,7 +3,7 @@ import { getRepository } from 'typeorm';
 import User from '../models/User';
 import File from '../models/File';
 
-import UploadFileS3Service from './UploadFileS3Service';
+import UploadFileS3Service from './S3/UploadFileS3Service';
 
 import AppError from '../errors/AppError';
 

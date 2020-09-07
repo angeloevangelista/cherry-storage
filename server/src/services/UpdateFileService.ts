@@ -52,7 +52,7 @@ class UpdateFileService {
     const updateFileS3Service = new UpdateFileS3Service();
 
     updateFileS3Service.execute({
-      filePath: 'storage',
+      s3Path: 'storage',
       fileName: uploadedFile.filename,
       mimeType: uploadedFile.mimetype,
     });
@@ -61,7 +61,7 @@ class UpdateFileService {
       const deleteFileS3Service = new DeleteFileS3Service();
 
       deleteFileS3Service.execute({
-        filePath: 'storage',
+        s3Path: 'storage',
         fileName: file.name,
       });
     }

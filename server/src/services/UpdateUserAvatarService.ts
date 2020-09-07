@@ -37,7 +37,7 @@ class UpdateUserAvatarService {
       const deleteFileS3Service = new DeleteFileS3Service();
 
       deleteFileS3Service.execute({
-        filePath: 'avatars',
+        s3Path: 'avatars',
         fileName: user.avatar,
       });
     }
@@ -49,7 +49,7 @@ class UpdateUserAvatarService {
     const uploadUserAvatarS3Service = new UploadUserAvatarS3Service();
 
     uploadUserAvatarS3Service.execute({
-      filePath: 'avatars',
+      s3Path: 'avatars',
       fileName: user.avatar,
       mimeType: avatarMimeType,
     });

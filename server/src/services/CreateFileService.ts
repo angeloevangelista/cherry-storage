@@ -40,7 +40,7 @@ class CreateFileService {
     const uploadFileS3Service = new UploadFileS3Service();
 
     uploadFileS3Service.execute({
-      filePath: 'storage',
+      s3Path: 'storage',
       fileName: file.name,
       mimeType: file.mime_type,
     });

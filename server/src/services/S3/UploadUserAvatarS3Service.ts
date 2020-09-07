@@ -7,7 +7,7 @@ import S3Config from '../../config/S3';
 import avatarsUploadConfig from '../../config/avatarsUpload';
 
 interface UploadUserAvatarS3Params {
-  filePath: string;
+  s3Path: string;
   fileName: string;
   mimeType: string;
 }
@@ -17,22 +17,26 @@ AWS.config.update({ region: S3Config.region });
 const s3 = new AWS.S3(S3Config);
 
 class UploadUserAvatarS3Service {
-  execute({ filePath, fileName, mimeType }: UploadUserAvatarS3Params): void {
+  execute({ s3Path, fileName, mimeType }: UploadUserAvatarS3Params): void {
     const fileContent = fs.readFileSync(
       path.join(avatarsUploadConfig.directory, fileName),
     );
 
     const params: S3.Types.PutObjectRequest = {
       Bucket: S3Config.name,
-      Key: `${filePath}/${fileName}`,
+      Key: `${s3Path}/${fileName}`,
       Body: fileContent,
       ContentType: mimeType,
     };
 
-    s3.upload(params, (err: Error) => {
+    s3.upload(params, async (err: Error) => {
       if (err) {
         throw err;
       }
+
+      const filePath = path.join(avatarsUploadConfig.directory, fileName);
+
+      await fs.promises.unlink(filePath);
     });
   }
 }

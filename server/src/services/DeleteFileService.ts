@@ -43,7 +43,7 @@ class DeleteFileService {
 
     deleteFileS3Service.execute({
       fileName: file.name,
-      filePath: 'storage',
+      s3Path: 'storage',
     });
 
     await filesRepository.remove(file);

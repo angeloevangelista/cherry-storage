@@ -21,7 +21,7 @@ export const Content = styled.div`
   max-width: 700px;
 
   form {
-    margin: 20px 0;
+    margin: 30px 0 40px 0;
     width: 340px;
     text-align: center;
 
@@ -68,6 +68,18 @@ export const Content = styled.div`
     &:hover {
       color: #fff;
       background: #cd373b;
+    }
+  }
+
+  @media only screen and (max-height: 580px) {
+    img {
+      align-self: flex-end;
+      width: 18rem;
+      margin: 0 20px;
+    }
+
+    form {
+      margin: 20px 0 20px 0px;
     }
   }
 `;

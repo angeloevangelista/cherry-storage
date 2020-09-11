@@ -36,7 +36,7 @@ const SignUp: React.FC = () => {
 
       const schema = Yup.object().shape({
         name: Yup.string()
-          .notOneOf(['hello'], 'World!')
+          .notOneOf(['Hello', 'hello'], 'World!')
           .required('O nome é obrigatório.'),
         surname: Yup.string().required('O sobrenome é obrigatório.'),
         email: Yup.string()

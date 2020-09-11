@@ -19,12 +19,17 @@ export default createGlobalStyle`
   }
 
   body {
-    color: #181818;
+    color: #673017;
     background: #EEEEEE;
     --webkit-font-smoothing: antialiased;
   }
 
+  h1 {
+    font-size: 3.4rem;
+  }
+
   body, input, button, textarea {
+    font-size: 1.6rem;
     font-family: 'Roboto', sans-serif;
   }
 

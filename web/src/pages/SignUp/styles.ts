@@ -26,8 +26,6 @@ export const Content = styled.div`
     text-align: center;
 
     h1 {
-      color: #220e03;
-      font-size: 24px;
       margin-bottom: 24px;
     }
 

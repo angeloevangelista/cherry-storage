@@ -1,6 +1,8 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { FiLogIn, FiMail, FiLock } from 'react-icons/fi';
+import {
+  FiLogIn, FiMail, FiLock,
+} from 'react-icons/fi';
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/web';
 import * as Yup from 'yup';
@@ -23,6 +25,7 @@ interface SignInFormData {
 }
 
 const SignIn: React.FC = () => {
+  const [loading, setLoading] = useState(false);
   const formRef = useRef<FormHandles>(null);
 
   const { signIn } = useAuth();
@@ -44,9 +47,13 @@ const SignIn: React.FC = () => {
           abortEarly: false,
         });
 
+        setLoading(true);
+
         const { email, password } = formData;
 
         await signIn({ email, password });
+
+        setLoading(false);
       } catch (err) {
         if (err instanceof Yup.ValidationError) {
           const errors = getValidationErrors(err);
@@ -54,11 +61,13 @@ const SignIn: React.FC = () => {
           formRef.current?.setErrors(errors);
         } else {
           addToast({
+            type: 'error',
             tittle: 'Erro na autenticação',
             description: 'Houve um erro ao fazer login, cheque as credenciais',
-            type: 'error',
           });
         }
+
+        setLoading(false);
       }
     },
     [addToast, signIn],
@@ -80,7 +89,9 @@ const SignIn: React.FC = () => {
             placeholder="Senha"
           />
 
-          <Button type="submit">Entrar</Button>
+          <Button type="submit" loading={loading}>
+            Entrar
+          </Button>
           <Link to="/forgot">Esqueci minha senha</Link>
         </Form>
 

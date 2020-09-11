@@ -1,7 +1,26 @@
-import styled from 'styled-components';
+import styled, { keyframes, css } from 'styled-components';
 import { shade } from 'polished';
 
-export const Container = styled.button`
+interface ButtonProps {
+  loading?: boolean;
+}
+
+const spin = keyframes`
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+`;
+
+export const Container = styled.button<ButtonProps>`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+
   border-radius: 10px;
   border: 0;
 
@@ -17,7 +36,24 @@ export const Container = styled.button`
   margin-top: 16px;
   transition: background-color 0.25s;
 
-  &:hover {
-    background: ${shade(0.25, '#cd373b')};
+  ${(props) => (props.loading
+    ? css`
+          opacity: 0.75;
+          cursor: not-allowed;
+
+          &:hover {
+            background: '#cd373b';
+          }
+        `
+    : css`
+          &:hover {
+            background: ${shade(0.25, '#cd373b')};
+          }
+        `)}
+
+  svg {
+    position: absolute;
+    right: 1.6rem;
+    animation: ${spin} 3s infinite linear;
   }
 `;

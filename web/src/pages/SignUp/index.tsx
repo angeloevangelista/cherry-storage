@@ -1,5 +1,5 @@
-import React, { useCallback, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useCallback, useRef, useState } from 'react';
+import { Link, useHistory } from 'react-router-dom';
 import {
   FiArrowLeft,
   FiMail,
@@ -10,6 +10,12 @@ import {
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/web';
 import * as Yup from 'yup';
+
+import { User } from '../../hooks/auth';
+
+import api from '../../services/api';
+
+import { useToast } from '../../hooks/toast';
 
 import logoImg from '../../assets/images/logo.svg';
 
@@ -30,33 +36,86 @@ interface SignUpData {
 }
 
 const SignUp: React.FC = () => {
+  const [loading, setLoading] = useState(false);
   const formRef = useRef<FormHandles>(null);
+  const history = useHistory();
 
-  const handleSubmit = useCallback(async (data: SignUpData) => {
-    try {
-      formRef.current?.setErrors({});
+  const { addToast } = useToast();
 
-      const schema = Yup.object().shape({
-        name: Yup.string()
-          .notOneOf(['Hello', 'hello'], 'World!')
-          .required('O nome é obrigatório.'),
-        surname: Yup.string().required('O sobrenome é obrigatório.'),
-        email: Yup.string()
-          .email('Insira um email válido.')
-          .required('O E-mail é obrigatório.'),
-        password: Yup.string().min(
-          6,
-          'A senha deve ter ao menos 6 caracteres.',
-        ),
-      });
+  const handleSubmit = useCallback(
+    async (data: SignUpData) => {
+      try {
+        formRef.current?.setErrors({});
 
-      await schema.validate(data, { abortEarly: false });
-    } catch (err) {
-      const errors = getValidationErrors(err);
+        const schema = Yup.object().shape({
+          name: Yup.string()
+            .notOneOf(['Hello', 'hello'], 'World!')
+            .required('O nome é obrigatório.'),
+          surname: Yup.string().required('O sobrenome é obrigatório.'),
+          email: Yup.string()
+            .email('Insira um email válido.')
+            .required('O E-mail é obrigatório.'),
+          password: Yup.string().min(
+            6,
+            'A senha deve ter ao menos 6 caracteres.',
+          ),
+        });
 
-      formRef.current?.setErrors(errors);
-    }
-  }, []);
+        setLoading(true);
+
+        await schema.validate(data, { abortEarly: false });
+
+        const {
+          name, surname, email, password,
+        } = data;
+
+        await api.post<User>('users', {
+          name,
+          surname,
+          email,
+          password,
+        });
+
+        setLoading(false);
+
+        addToast({
+          type: 'success',
+          tittle: 'Sucesso',
+          description: 'O cadastro foi realizado com sucesso.',
+        });
+
+        history.push('/');
+      } catch (err) {
+        if (err instanceof Yup.ValidationError) {
+          const errors = getValidationErrors(err);
+
+          formRef.current?.setErrors(errors);
+          setLoading(false);
+          return;
+        }
+
+        if (err.response.data.message === 'Email already used') {
+          addToast({
+            type: 'error',
+            tittle: 'Usuário existente',
+            description:
+              'Já existe um usuário com este email, apenas faça logon.',
+          });
+
+          history.push('/');
+        } else {
+          addToast({
+            type: 'error',
+            tittle: 'Erro na criação',
+            description: 'Houve um erro ao realizar o cadastro.',
+          });
+        }
+
+        setLoading(false);
+      }
+    },
+    [addToast, history],
+  );
 
   return (
     <Container>
@@ -75,7 +134,12 @@ const SignUp: React.FC = () => {
               type="text"
               placeholder="Sobrenome"
             />
-            <Input name="email" icon={FiMail} type="text" placeholder="E-mail" />
+            <Input
+              name="email"
+              icon={FiMail}
+              type="text"
+              placeholder="E-mail"
+            />
             <Input
               name="password"
               icon={FiLock}
@@ -83,7 +147,9 @@ const SignUp: React.FC = () => {
               placeholder="Senha"
             />
 
-            <Button type="submit">Cadastrar</Button>
+            <Button type="submit" loading={loading}>
+              Cadastrar
+            </Button>
           </Form>
 
           <Link to="/">

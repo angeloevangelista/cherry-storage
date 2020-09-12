@@ -4,7 +4,7 @@ import React, {
 
 import api from '../services/api';
 
-interface User {
+export interface User {
   id: string;
   avatar: string;
   avatar_url: string;

@@ -18,7 +18,9 @@ import getValidationErrors from '../../utils/getValidationErrors';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
 
-import { Container, Content, Background } from './styles';
+import {
+  Container, Content, AnimationContainer, Background,
+} from './styles';
 
 interface SignUpData {
   name: string;
@@ -60,33 +62,35 @@ const SignUp: React.FC = () => {
     <Container>
       <Background />
       <Content>
-        <img src={logoImg} alt="Cherry Storage" />
+        <AnimationContainer>
+          <img src={logoImg} alt="Cherry Storage" />
 
-        <Form ref={formRef} onSubmit={handleSubmit}>
-          <h1>Faça seu cadastro</h1>
+          <Form ref={formRef} onSubmit={handleSubmit}>
+            <h1>Faça seu cadastro</h1>
 
-          <Input name="name" icon={FiUser} type="text" placeholder="Nome" />
-          <Input
-            name="surname"
-            icon={FiBookmark}
-            type="text"
-            placeholder="Sobrenome"
-          />
-          <Input name="email" icon={FiMail} type="text" placeholder="E-mail" />
-          <Input
-            name="password"
-            icon={FiLock}
-            type="password"
-            placeholder="Senha"
-          />
+            <Input name="name" icon={FiUser} type="text" placeholder="Nome" />
+            <Input
+              name="surname"
+              icon={FiBookmark}
+              type="text"
+              placeholder="Sobrenome"
+            />
+            <Input name="email" icon={FiMail} type="text" placeholder="E-mail" />
+            <Input
+              name="password"
+              icon={FiLock}
+              type="password"
+              placeholder="Senha"
+            />
 
-          <Button type="submit">Cadastrar</Button>
-        </Form>
+            <Button type="submit">Cadastrar</Button>
+          </Form>
 
-        <Link to="/">
-          <FiArrowLeft />
-          <span>Voltar para logon</span>
-        </Link>
+          <Link to="/">
+            <FiArrowLeft />
+            <span>Voltar para logon</span>
+          </Link>
+        </AnimationContainer>
       </Content>
     </Container>
   );

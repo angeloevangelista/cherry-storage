@@ -17,7 +17,9 @@ import Button from '../../components/Button';
 
 import getValidationErrors from '../../utils/getValidationErrors';
 
-import { Container, Content, Background } from './styles';
+import {
+  Container, Content, AnimationContainer, Background,
+} from './styles';
 
 interface SignInFormData {
   email: string;
@@ -76,29 +78,31 @@ const SignIn: React.FC = () => {
   return (
     <Container>
       <Content>
-        <img src={logoImg} alt="Cherry Storage" />
+        <AnimationContainer>
+          <img src={logoImg} alt="Cherry Storage" />
 
-        <Form ref={formRef} onSubmit={handleSubmit}>
-          <h1>Fazer logon</h1>
+          <Form ref={formRef} onSubmit={handleSubmit}>
+            <h1>Fazer logon</h1>
 
-          <Input name="email" icon={FiMail} type="text" placeholder="E-mail" />
-          <Input
-            name="password"
-            icon={FiLock}
-            type="password"
-            placeholder="Senha"
-          />
+            <Input name="email" icon={FiMail} type="text" placeholder="E-mail" />
+            <Input
+              name="password"
+              icon={FiLock}
+              type="password"
+              placeholder="Senha"
+            />
 
-          <Button type="submit" loading={loading}>
-            Entrar
-          </Button>
-          <Link to="/forgot">Esqueci minha senha</Link>
-        </Form>
+            <Button type="submit" loading={loading}>
+              Entrar
+            </Button>
+            <Link to="/forgot">Esqueci minha senha</Link>
+          </Form>
 
-        <Link to="/signup">
-          <FiLogIn />
-          <span>Criar conta</span>
-        </Link>
+          <Link to="/signup">
+            <FiLogIn />
+            <span>Criar conta</span>
+          </Link>
+        </AnimationContainer>
       </Content>
       <Background />
     </Container>

@@ -11,6 +11,10 @@
     "start": "ts-node src/server.ts --transpile-only --ignore node_modules",
     "typeorm": "ts-node node_modules/typeorm/cli.js"
   },
+  "engines": {
+    "node": "12.18.3",
+    "npm": "6.9.0"
+  },
   "dependencies": {
     "@types/uuid": "^8.3.0",
     "aws-sdk": "^2.747.0",

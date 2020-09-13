@@ -25,7 +25,7 @@ const Header: React.FC = ({ children }) => {
               src={
                 user.avatar_url
                   ? user.avatar_url
-                  : 'https://api.adorable.io/avatars/50/dot@adorable.io.png'
+                  : `https://api.adorable.io/avatars/50/${user.name}@adorable.io.png`
               }
               alt={user.name}
             />

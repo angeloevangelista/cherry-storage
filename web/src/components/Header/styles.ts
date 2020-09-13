@@ -22,6 +22,12 @@ export const Content = styled.div`
     width: 16rem;
     height: 20rem;
   }
+
+  @media only screen and (max-width: 800px) {
+    > img {
+      display: none;
+    }
+  }
 `;
 
 export const UserInfo = styled.div`

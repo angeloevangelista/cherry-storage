@@ -94,7 +94,10 @@ const SignUp: React.FC = () => {
           return;
         }
 
-        if (err.response.data.message === 'Email already used') {
+        if (
+          err.response
+          && err.response.data.message === 'Email already used'
+        ) {
           addToast({
             type: 'error',
             tittle: 'Usuário existente',

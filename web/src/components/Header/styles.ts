@@ -1,4 +1,8 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
+
+interface ContentProps {
+  hideLogo?: boolean;
+}
 
 export const Container = styled.header`
   background: #ca484c;
@@ -7,7 +11,7 @@ export const Container = styled.header`
   width: 100%;
 `;
 
-export const Content = styled.div`
+export const Content = styled.div<ContentProps>`
   flex: 1;
   display: flex;
 
@@ -18,16 +22,31 @@ export const Content = styled.div`
   max-width: 1000px;
   margin: 0 auto;
 
+  a {
+    text-decoration: none;
+    display: flex;
+    align-content: center;
+    padding: 0.4rem;
+    transition: opacity 0.25s;
+
+    &:hover {
+      opacity: 0.75;
+    }
+  }
+
   > img {
     width: 16rem;
     height: 20rem;
   }
 
-  @media only screen and (max-width: 800px) {
-    > img {
-      display: none;
-    }
-  }
+  ${(props) => props.hideLogo
+    && css`
+      @media only screen and (max-width: 800px) {
+        > img {
+          display: none;
+        }
+      }
+    `}
 `;
 
 export const UserInfo = styled.div`

@@ -2,6 +2,8 @@ import styled, { keyframes, css } from 'styled-components';
 import { shade } from 'polished';
 
 interface ButtonProps {
+  color: string;
+  background: string;
   loading?: boolean;
 }
 
@@ -27,10 +29,10 @@ export const Container = styled.button<ButtonProps>`
   width: 100%;
   height: 56px;
 
-  background: #cd373b;
+  background: ${(props) => props.background};
   padding: 0 16px;
 
-  color: #fff;
+  color: ${(props) => props.color};
   font-size: 16px;
   font-weight: bold;
   margin-top: 16px;
@@ -42,12 +44,12 @@ export const Container = styled.button<ButtonProps>`
           cursor: not-allowed;
 
           &:hover {
-            background: '#cd373b';
+            background: ${props.background};
           }
         `
     : css`
           &:hover {
-            background: ${shade(0.25, '#cd373b')};
+            background: ${shade(0.25, props.background)};
           }
         `)}
 

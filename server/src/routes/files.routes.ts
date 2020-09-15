@@ -23,11 +23,16 @@ filesRouter.get('/', async (request, response) => {
     },
   });
 
+  files.forEach((file) => {
+    file.url = `${process.env.AWS_S3_URL}/storage/${file.name}`;
+  });
+
   return response.json(files);
 });
 
 filesRouter.get('/:file_id', async (request, response) => {
   const { file_id } = request.params;
+  // const { download } = request.query;
 
   const findFileService = new FindFileService();
 
@@ -35,6 +40,10 @@ filesRouter.get('/:file_id', async (request, response) => {
     user_id: request.user.id,
     file_id,
   });
+
+  // if (download) {
+  //   file.mime_type = 'application/octet-stream';
+  // }
 
   return response.json(file);
 });

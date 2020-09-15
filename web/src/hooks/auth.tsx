@@ -37,6 +37,8 @@ const AuthProvider: React.FC = ({ children }) => {
     const user = localStorage.getItem('@CherryStorage:user');
 
     if (token && user) {
+      api.defaults.headers.Authorization = `Bearer ${token}`;
+
       return { token, user: JSON.parse(user) };
     }
 
@@ -53,6 +55,8 @@ const AuthProvider: React.FC = ({ children }) => {
 
     localStorage.setItem('@CherryStorage:token', token);
     localStorage.setItem('@CherryStorage:user', JSON.stringify(user));
+
+    api.defaults.headers.Authorization = `Bearer ${token}`;
 
     setAuthData({ token, user });
   }, []);

@@ -1,5 +1,15 @@
 import { darken } from 'polished';
-import styled from 'styled-components';
+import styled, { css, keyframes } from 'styled-components';
+
+const spin = keyframes`
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+`;
 
 export const Container = styled.div`
   header {
@@ -96,43 +106,56 @@ export const FileList = styled.table`
       }
     }
   }
+`;
 
-  tbody {
-    tr {
-      line-height: 30px;
-      padding-top: 0.5rem;
+interface FileItemProps {
+  downloading?: boolean;
+}
 
-      &:hover td {
-        background: ${darken(0.05, '#eeeeee')};
-      }
+export const FileItem = styled.tr<FileItemProps>`
+  line-height: 30px;
+  padding-top: 0.5rem;
 
-      td {
-        padding: 1rem 0 1rem 1rem;
-        vertical-align: middle;
-        display: table-cell;
+  &:hover td {
+    background: ${darken(0.05, '#eeeeee')};
+  }
 
-        div {
-          display: flex;
-          justify-content: space-around;
+  td {
+    padding: 1rem 0 1rem 1rem;
+    vertical-align: middle;
+    display: table-cell;
 
-          button {
-            padding: 0.6rem;
-            border: 0;
-            background: transparent;
-            border-radius: 50%;
-            display: flex;
-            align-content: center;
+    div {
+      display: flex;
+      justify-content: space-around;
 
-            &:hover {
-              background: #bbb;
-            }
-          }
+      button {
+        padding: 0.6rem;
+        border: 0;
+        background: transparent;
+        border-radius: 50%;
+        display: flex;
+        align-content: center;
+
+        &:hover {
+          background: #bbb;
         }
-      }
 
-      & + tr td {
-        border-top: 1px solid #4444;
+        ${(props) => props.downloading
+          && css`
+            &:last-child {
+              cursor: not-allowed;
+
+              svg {
+                animation: ${spin} 3s infinite linear;
+              }
+            }
+          `}
       }
     }
+  }
+
+  & + tr td {
+    border-top: 1px solid #4444;
   }
 `;

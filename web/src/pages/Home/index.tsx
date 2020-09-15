@@ -1,6 +1,10 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import {
-  FiSearch, FiDownload, FiUpload, FiXSquare,
+  FiSearch,
+  FiDownload,
+  FiUpload,
+  FiXSquare,
+  FiLoader,
 } from 'react-icons/fi';
 import { Form } from '@unform/web';
 import fileDownload from 'js-file-download';
@@ -24,6 +28,7 @@ import {
   FilesContainer,
   Content,
   FileList,
+  FileItem,
 } from './styles';
 
 interface File {
@@ -39,6 +44,7 @@ interface File {
 
 const Home: React.FC = () => {
   const [files, setFiles] = useState<File[]>([]);
+  const [activeDownloads, setActiveDownloads] = useState<string[]>([]);
 
   const { addToast } = useToast();
   const { signOut } = useAuth();
@@ -70,13 +76,20 @@ const Home: React.FC = () => {
     loadFiles();
   }, [addToast, history, signOut]);
 
-  const handleDownload = useCallback(async (id: string) => {
-    const response = await api.get(`/storage/${id}`, {
-      responseType: 'blob',
-    }); // Esta rota precisa trazer o blob do arquivo
+  const handleDownload = useCallback(
+    async (id: string, filename: string) => {
+      setActiveDownloads([...activeDownloads, id]);
 
-    fileDownload(response.data, 'filename');
-  }, []);
+      const response = await api.get(`/storage/${id}`, {
+        responseType: 'blob',
+      });
+
+      fileDownload(response.data, filename);
+
+      setActiveDownloads(activeDownloads.filter((fileId) => fileId !== id));
+    },
+    [activeDownloads],
+  );
 
   const handleOpenFile = useCallback((url: string) => {
     window.open(url, '_blank');
@@ -120,29 +133,44 @@ const Home: React.FC = () => {
             </thead>
 
             <tbody>
-              {files.map((file) => (
-                <tr key={file.id} onDoubleClick={() => handleOpenFile(file.url)}>
-                  <td>{file.original_filename}</td>
-                  <td>{file.updated_at}</td>
-                  <td>
-                    <div>
-                      <button type="button" title="Atualizar">
-                        <FiUpload size={20} />
-                      </button>
-                      <button type="button" title="Excluir">
-                        <FiXSquare size={20} />
-                      </button>
-                      <button
-                        type="button"
-                        title="Baixar"
-                        onClick={() => handleDownload(file.id)}
-                      >
-                        <FiDownload size={20} />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
+              {files.map((file) => {
+                const downloading = activeDownloads.includes(file.id);
+
+                return (
+                  <FileItem
+                    downloading={downloading}
+                    key={file.id}
+                    onDoubleClick={() => handleOpenFile(file.url)}
+                  >
+                    <td>{file.original_filename}</td>
+                    <td>{file.updated_at}</td>
+                    <td>
+                      <div>
+                        <button type="button" title="Atualizar">
+                          <FiUpload size={20} />
+                        </button>
+
+                        <button type="button" title="Excluir">
+                          <FiXSquare size={20} />
+                        </button>
+
+                        <button
+                          type="button"
+                          title="Baixar"
+                          disabled={downloading}
+                          onClick={() => handleDownload(file.id, file.original_filename)}
+                        >
+                          {downloading ? (
+                            <FiLoader size={20} />
+                          ) : (
+                            <FiDownload size={20} />
+                          )}
+                        </button>
+                      </div>
+                    </td>
+                  </FileItem>
+                );
+              })}
             </tbody>
           </FileList>
         </FilesContainer>

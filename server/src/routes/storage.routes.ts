@@ -1,29 +1,27 @@
-import path from 'path';
 import { Router } from 'express';
 
-import filesUploadConfig from '../config/filesUpload';
-
-import FindFileService from '../services/FindFileService';
+import GetFileService from '../services/GetFileService';
 
 const storageRouter = Router();
 
 storageRouter.get('/:file_id', async (request, response) => {
   const { file_id } = request.params;
+  const getFileService = new GetFileService();
 
-  const findFileService = new FindFileService();
-
-  const file = await findFileService.execute({
-    user_id: request.user.id,
+  const file = await getFileService.execute({
     file_id,
+    user_id: request.user.id,
   });
 
-  if (!file) {
-    return response.status(404).send();
-  }
+  response.writeHead(200, {
+    'Content-Type': file.ContentType,
+    'Content-disposition': `attachment;filename=${file.ETag}`,
+    'Content-Length': file.ContentLength,
+  });
 
-  const filePath = path.join(filesUploadConfig.directory, file.name);
+  response.write(file.Body, 'binary');
 
-  return response.sendFile(filePath);
+  return response.end(undefined, 'binary');
 });
 
 export default storageRouter;

@@ -1,8 +1,9 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, {
+  useCallback, useEffect, useRef, useState,
+} from 'react';
 import {
-  FiSearch,
   FiDownload,
-  FiUpload,
+  FiBookOpen,
   FiXSquare,
   FiLoader,
 } from 'react-icons/fi';
@@ -14,8 +15,6 @@ import Header from '../../components/Header';
 import Button from '../../components/Button';
 import ScrollArea from '../../components/ScrollArea';
 
-import Input from '../../components/Input';
-
 import api from '../../services/api';
 
 import { useAuth } from '../../hooks/auth';
@@ -24,14 +23,14 @@ import { useToast } from '../../hooks/toast';
 import {
   Container,
   FileControl,
-  UsageInfo,
   FilesContainer,
   Content,
   FileList,
   FileItem,
 } from './styles';
+import FileInput from '../../components/FileInput';
 
-interface File {
+interface ApplicationFile {
   id: string;
   user_id: string;
   name: string;
@@ -42,20 +41,54 @@ interface File {
   updated_at: Date;
 }
 
+interface UploadFormData {
+  file: File;
+}
+
 const Home: React.FC = () => {
-  const [files, setFiles] = useState<File[]>([]);
+  const uploadFormRef = useRef<HTMLInputElement>(null);
+  const [files, setFiles] = useState<ApplicationFile[]>([]);
   const [activeDownloads, setActiveDownloads] = useState<string[]>([]);
 
   const { addToast } = useToast();
   const { signOut } = useAuth();
   const history = useHistory();
 
-  const handleSearchSubmit = useCallback(() => {}, []);
+  const handleUploadSubmit = useCallback(
+    async ({ file }: UploadFormData) => {
+      try {
+        const formData = new FormData();
+
+        formData.append('file', file);
+
+        const response = await api.post('/files', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+
+        setFiles([...files, response.data]);
+
+        addToast({
+          type: 'success',
+          tittle: 'Enviado',
+          description: 'O envio foi feito com sucesso',
+        });
+      } catch {
+        addToast({
+          type: 'error',
+          tittle: 'Falha ao enviar',
+          description: 'Houve uma falha no envio, tente novamente',
+        });
+      }
+    },
+    [addToast, files],
+  );
 
   useEffect(() => {
     async function loadFiles() {
       try {
-        const response = await api.get<File[]>('/files');
+        const response = await api.get<ApplicationFile[]>('/files');
 
         setFiles(response.data);
       } catch (err) {
@@ -91,6 +124,29 @@ const Home: React.FC = () => {
     [activeDownloads],
   );
 
+  const handleDelete = useCallback(
+    async (id: string) => {
+      try {
+        await api.delete(`/files/${id}`);
+
+        setFiles([...files.filter((file) => file.id !== id)]);
+
+        addToast({
+          type: 'success',
+          tittle: 'Excluído',
+          description: 'O arquivo foi excluído com sucesso',
+        });
+      } catch {
+        addToast({
+          type: 'error',
+          tittle: 'Falha ao excluir',
+          description: 'Houve uma falha ao excluir o arquivo, tente novamente',
+        });
+      }
+    },
+    [addToast, files],
+  );
+
   const handleOpenFile = useCallback((url: string) => {
     window.open(url, '_blank');
   }, []);
@@ -98,25 +154,26 @@ const Home: React.FC = () => {
   return (
     <Container>
       <Header hideLogo>
-        <Form onSubmit={handleSearchSubmit}>
+        {/* <Form onSubmit={handleSearchSubmit}>
           <Input name="search" icon={FiSearch} placeholder="Pesquisar" />
-        </Form>
+        </Form> */}
       </Header>
 
       <Content>
         <FileControl>
           <ScrollArea>
-            <Button background="#ddd" color="#010101">
-              Novo arquivo
-            </Button>
+            <Form onSubmit={handleUploadSubmit}>
+              <FileInput name="file" ref={uploadFormRef} />
+              <Button type="submit">Enviar</Button>
+            </Form>
 
-            <UsageInfo>
+            {/* <UsageInfo>
               <legend>Uso de armazenamento</legend>
               <span>500 MB de 2 GB usados</span>
               <div>
                 <div />
               </div>
-            </UsageInfo>
+            </UsageInfo> */}
           </ScrollArea>
         </FileControl>
 
@@ -137,20 +194,24 @@ const Home: React.FC = () => {
                 const downloading = activeDownloads.includes(file.id);
 
                 return (
-                  <FileItem
-                    downloading={downloading}
-                    key={file.id}
-                    onDoubleClick={() => handleOpenFile(file.url)}
-                  >
+                  <FileItem downloading={downloading} key={file.id}>
                     <td>{file.original_filename}</td>
                     <td>{file.updated_at}</td>
                     <td>
                       <div>
-                        <button type="button" title="Atualizar">
-                          <FiUpload size={20} />
+                        <button
+                          type="button"
+                          title="Atualizar"
+                          onClick={() => handleOpenFile(file.url)}
+                        >
+                          <FiBookOpen size={20} />
                         </button>
 
-                        <button type="button" title="Excluir">
+                        <button
+                          type="button"
+                          title="Excluir"
+                          onClick={() => handleDelete(file.id)}
+                        >
                           <FiXSquare size={20} />
                         </button>
 

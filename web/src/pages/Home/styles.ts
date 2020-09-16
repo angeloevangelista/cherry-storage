@@ -42,6 +42,13 @@ export const FileControl = styled.aside`
   height: calc(100vh - 7rem);
   transition: margin-left 0.3s;
 
+  input {
+    width: 100%;
+
+    &::-webkit-file-upload-button {
+    }
+  }
+
   button {
     margin-bottom: 2rem;
   }

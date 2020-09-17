@@ -82,11 +82,35 @@ export const UsageInfo = styled.fieldset`
   }
 `;
 
-export const FilesContainer = styled.div`
+interface FilesContainerProps {
+  loadingFiles?: boolean;
+}
+
+export const FilesContainer = styled.div<FilesContainerProps>`
   margin-left: calc(24rem);
   transition: margin-left 0.3s;
   padding: 4rem;
   width: 100%;
+
+  > div {
+    display: flex;
+    align-items: center;
+    font-size: 2.4rem;
+    padding: 10rem;
+
+    svg {
+      margin-right: 1rem;
+    }
+
+    ${(props) => props.loadingFiles
+      && css`
+        svg {
+          font-size: 2rem;
+          animation: ${spin} 2s infinite linear;
+          margin-left: 1rem;
+        }
+      `}
+  }
 
   @media only screen and (max-width: 800px) {
     margin-left: 0;

@@ -31,6 +31,7 @@
     "no-use-before-define": "off",
     "react/prop-types": "off",
     "no-param-reassign": "off",
+    "no-nested-ternary": "off",
     "camelcase": "off",
     "import/extensions": [
       "error",

@@ -1,5 +1,5 @@
 import React, {
-  useCallback, useEffect, useRef, useState,
+  useCallback, useEffect, useState,
 } from 'react';
 import {
   FiDownload, FiBookOpen, FiXSquare, FiLoader, FiFile,
@@ -43,7 +43,6 @@ interface UploadFormData {
 }
 
 const Home: React.FC = () => {
-  const uploadFormRef = useRef<HTMLInputElement>(null);
   const [files, setFiles] = useState<ApplicationFile[]>([]);
   const [activeDownloads, setActiveDownloads] = useState<string[]>([]);
   const [loadingFiles, setLoadingFiles] = useState(true);
@@ -152,7 +151,7 @@ const Home: React.FC = () => {
 
   return (
     <Container>
-      <Header hideLogo>
+      <Header>
         {/* <Form onSubmit={handleSearchSubmit}>
           <Input name="search" icon={FiSearch} placeholder="Pesquisar" />
         </Form> */}
@@ -162,7 +161,7 @@ const Home: React.FC = () => {
         <FileControl>
           <ScrollArea>
             <Form onSubmit={handleUploadSubmit}>
-              <FileInput name="file" ref={uploadFormRef} />
+              <FileInput name="file" />
               <Button type="submit">Enviar</Button>
             </Form>
 

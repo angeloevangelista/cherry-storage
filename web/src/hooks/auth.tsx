@@ -27,6 +27,7 @@ interface AuthContextData {
   user: User;
   signIn(credentials: SignInCredentials): Promise<void>;
   signOut(): void;
+  refreshUser(use: User): void;
 }
 
 const AuthContext = createContext<AuthContextData>({} as AuthContextData);
@@ -68,8 +69,30 @@ const AuthProvider: React.FC = ({ children }) => {
     setAuthData({} as AuthState);
   }, []);
 
+  const refreshUser = useCallback(
+    (user: User) => {
+      const token = localStorage.getItem('@CherryStorage:token');
+
+      if (!token) {
+        signOut();
+        return;
+      }
+
+      localStorage.setItem('@CherryStorage:user', JSON.stringify(user));
+
+      setAuthData({ token, user });
+    },
+    [signOut],
+  );
   return (
-    <AuthContext.Provider value={{ user: authData.user, signIn, signOut }}>
+    <AuthContext.Provider
+      value={{
+        user: authData.user,
+        signIn,
+        signOut,
+        refreshUser,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

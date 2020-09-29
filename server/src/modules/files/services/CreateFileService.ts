@@ -1,13 +1,13 @@
-import { getRepository } from 'typeorm';
-
-import User from '@modules/users/infra/typeorm/entities/User';
-import File from '@modules/files/infra/typeorm/entities/File';
+import AppError from '@shared/errors/AppError';
 
 import UploadFileS3Service from '@modules/files/infra/S3/UploadFile';
 
-import AppError from '@shared/errors/AppError';
+import File from '@modules/files/infra/typeorm/entities/File';
 
-interface Request {
+import IUsersRepository from '@modules/users/repositories/IUsersRepository';
+import IFilesRepository from '@modules/files/repositories/IFilesRepository';
+
+interface IRequest {
   user_id: string;
   uploadedFile: {
     originalName: string;
@@ -17,25 +17,24 @@ interface Request {
 }
 
 class CreateFileService {
-  async execute({ user_id, uploadedFile }: Request): Promise<File> {
-    const usersRepository = getRepository(User);
+  constructor(
+    private filesRepository: IFilesRepository,
+    private usersRepository: IUsersRepository,
+  ) {}
 
-    const user = await usersRepository.findOne(user_id);
+  public async execute({ user_id, uploadedFile }: IRequest): Promise<File> {
+    const user = await this.usersRepository.findById(user_id);
 
     if (!user) {
       throw new AppError('Only authenticated users can upload files.');
     }
 
-    const filesRepository = getRepository(File);
-
-    const file = filesRepository.create({
+    const file = await this.filesRepository.create({
       user_id: user.id,
       name: uploadedFile.fileName,
       original_filename: uploadedFile.originalName,
       mime_type: uploadedFile.mimeType,
     });
-
-    await filesRepository.save(file);
 
     const uploadFileS3Service = new UploadFileS3Service();
 

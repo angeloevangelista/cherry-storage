@@ -1,11 +1,10 @@
-import { getRepository } from 'typeorm';
-
 import User from '@modules/users/infra/typeorm/entities/User';
 
 import DeleteFileS3Service from '@modules/files/infra/S3/DeleteFile';
 import UploadUserAvatarS3Service from '@modules/files/infra/S3/UploadUserAvatar';
 
 import AppError from '@shared/errors/AppError';
+import IUsersRepository from '@modules/users/repositories/IUsersRepository';
 
 interface Request {
   user_id: string;
@@ -16,7 +15,9 @@ interface Request {
 const validMimetypes = ['image/jpeg', 'image/png'];
 
 class UpdateUserAvatarService {
-  async execute({
+  constructor(private usersRepository: IUsersRepository){}
+
+  public async execute({
     user_id,
     avatarFilename,
     avatarMimeType,
@@ -25,9 +26,7 @@ class UpdateUserAvatarService {
       throw new AppError('Invalid image format.');
     }
 
-    const usersRepository = getRepository(User);
-
-    const user = await usersRepository.findOne(user_id);
+    const user = await this.usersRepository.findById(user_id);
 
     if (!user) {
       throw new AppError('only authenticated users can change avatar.');
@@ -44,7 +43,7 @@ class UpdateUserAvatarService {
 
     user.avatar = avatarFilename;
 
-    await usersRepository.save(user);
+    await this.usersRepository.update(user);
 
     const uploadUserAvatarS3Service = new UploadUserAvatarS3Service();
 

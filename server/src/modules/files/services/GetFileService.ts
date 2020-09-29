@@ -1,16 +1,17 @@
 import AWS, { AWSError } from 'aws-sdk';
 import { GetObjectOutput } from 'aws-sdk/clients/s3';
 import { PromiseResult } from 'aws-sdk/lib/request';
-import { getRepository } from 'typeorm';
 import { validate } from 'uuid';
 
 import S3Config from '@config/S3';
 import AppError from '@shared/errors/AppError';
-import User from '@modules/users/infra/typeorm/entities/User';
-import File from '@modules/files/infra/typeorm/entities/File';
+
 import GetFileS3Service from '@modules/files/infra/S3/GetFile';
 
-interface Request {
+import IFilesRepository from '@modules/files/repositories/IFilesRepository';
+import IUsersRepository from '@modules/users/repositories/IUsersRepository';
+
+interface IRequest {
   file_id: string;
   user_id: string;
 }
@@ -22,25 +23,26 @@ AWS.config.update({
 });
 
 class GetFileService {
-  async execute({
+  constructor(
+    private filesRepository: IFilesRepository,
+    private usersRepository: IUsersRepository,
+  ) {}
+
+  public async execute({
     file_id,
     user_id,
-  }: Request): Promise<PromiseResult<GetObjectOutput, AWSError>> {
+  }: IRequest): Promise<PromiseResult<GetObjectOutput, AWSError>> {
     if (!validate(file_id)) {
       throw new AppError('Invalid file_id.');
     }
 
-    const usersRepository = getRepository(User);
-
-    const user = await usersRepository.findOne(user_id);
+    const user = await this.usersRepository.findById(user_id);
 
     if (!user) {
       throw new AppError('Only authenticated users can delete files.');
     }
 
-    const filesRepository = getRepository(File);
-
-    const file = await filesRepository.findOne(file_id);
+    const file = await this.filesRepository.findById(file_id);
 
     const getFileS3Service = new GetFileS3Service();
 

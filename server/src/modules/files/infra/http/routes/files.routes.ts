@@ -9,9 +9,9 @@ const filesRouter = Router();
 const upload = multer(filesUploadConfig);
 const filesController = new FilesController();
 
-filesRouter.get('/', filesController.list);
+filesRouter.get('/', filesController.index);
 
-filesRouter.get('/:file_id', filesController.find);
+filesRouter.get('/:file_id', filesController.show);
 
 filesRouter.post('/', upload.single('file'), filesController.create);
 
@@ -21,6 +21,6 @@ filesRouter.put(
   filesController.update,
 );
 
-filesRouter.delete('/:file_id', filesController.destroy);
+filesRouter.delete('/:file_id', filesController.delete);
 
 export default filesRouter;

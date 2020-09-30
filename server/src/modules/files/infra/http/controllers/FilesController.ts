@@ -8,7 +8,7 @@ import FindFileService from '@modules/files/services/FindFileService';
 import ListFilesService from '@modules/files/services/ListFilesService';
 
 class FilesController {
-  public async list(request: Request, response: Response): Promise<Response> {
+  public async index(request: Request, response: Response): Promise<Response> {
     const listFilesService = container.resolve(ListFilesService);
 
     const files = await listFilesService.execute(request.user.id);
@@ -20,7 +20,7 @@ class FilesController {
     return response.json(files);
   }
 
-  public async find(request: Request, response: Response): Promise<Response> {
+  public async show(request: Request, response: Response): Promise<Response> {
     const { file_id } = request.params;
 
     const findFileService = container.resolve(FindFileService);
@@ -65,7 +65,7 @@ class FilesController {
     return response.json(file);
   }
 
-  public async destroy(
+  public async delete(
     request: Request,
     response: Response,
   ): Promise<Response> {

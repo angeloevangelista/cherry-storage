@@ -5,7 +5,7 @@ import { container } from 'tsyringe';
 import GetFileService from '@modules/files/services/GetFileService';
 
 class StorageController {
-  public async find(request: Request, response: Response): Promise<void> {
+  public async show(request: Request, response: Response): Promise<void> {
     const { file_id } = request.params;
     const getFileService = container.resolve(GetFileService);
 

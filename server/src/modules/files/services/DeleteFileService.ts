@@ -1,3 +1,4 @@
+import { injectable, inject } from 'tsyringe';
 import { validate } from 'uuid';
 
 import DeleteFileS3Service from '@modules/files/infra/S3/DeleteFile';
@@ -12,9 +13,12 @@ interface Request {
   file_id: string;
 }
 
+@injectable()
 class DeleteFileService {
   constructor(
+    @inject('FilesRepository')
     private filesRepository: IFilesRepository,
+    @inject('UsersRepository')
     private usersRepository: IUsersRepository,
   ) {}
 

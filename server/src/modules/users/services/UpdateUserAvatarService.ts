@@ -1,3 +1,5 @@
+import { injectable, inject } from 'tsyringe';
+
 import User from '@modules/users/infra/typeorm/entities/User';
 
 import DeleteFileS3Service from '@modules/files/infra/S3/DeleteFile';
@@ -14,8 +16,12 @@ interface Request {
 
 const validMimetypes = ['image/jpeg', 'image/png'];
 
+@injectable()
 class UpdateUserAvatarService {
-  constructor(private usersRepository: IUsersRepository){}
+  constructor(
+    @inject('UsersRepository')
+    private usersRepository: IUsersRepository,
+  ) {}
 
   public async execute({
     user_id,

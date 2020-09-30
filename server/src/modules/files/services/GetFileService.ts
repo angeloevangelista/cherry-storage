@@ -2,6 +2,7 @@ import AWS, { AWSError } from 'aws-sdk';
 import { GetObjectOutput } from 'aws-sdk/clients/s3';
 import { PromiseResult } from 'aws-sdk/lib/request';
 import { validate } from 'uuid';
+import { injectable, inject } from 'tsyringe';
 
 import S3Config from '@config/S3';
 import AppError from '@shared/errors/AppError';
@@ -22,9 +23,12 @@ AWS.config.update({
   secretAccessKey: S3Config.secretAccessKey,
 });
 
+@injectable()
 class GetFileService {
   constructor(
+    @inject('FilesRepository')
     private filesRepository: IFilesRepository,
+    @inject('UsersRepository')
     private usersRepository: IUsersRepository,
   ) {}
 

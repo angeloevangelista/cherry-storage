@@ -1,17 +1,13 @@
 import { Router } from 'express';
+import { container } from 'tsyringe';
 
 import GetFileService from '@modules/files/services/GetFileService';
-
-import FilesRepository from '@modules/files/infra/typeorm/repositories/FilesRepository';
-import UsersRepository from '@modules/users/infra/typeorm/repositories/UsersRepository';
 
 const storageRouter = Router();
 
 storageRouter.get('/:file_id', async (request, response) => {
-  const filesRepository = new FilesRepository();
-  const usersRepository = new UsersRepository();
   const { file_id } = request.params;
-  const getFileService = new GetFileService(filesRepository, usersRepository);
+  const getFileService = container.resolve(GetFileService);
 
   const file = await getFileService.execute({
     file_id,

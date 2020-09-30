@@ -5,6 +5,7 @@
     "dtos",
     "middlewares",
     "originalname",
+    "tsyringe",
     "typeorm"
   ]
 }

@@ -1,3 +1,5 @@
+import { injectable, inject } from 'tsyringe';
+
 import AppError from '@shared/errors/AppError';
 
 import UploadFileS3Service from '@modules/files/infra/S3/UploadFile';
@@ -16,9 +18,12 @@ interface IRequest {
   };
 }
 
+@injectable()
 class CreateFileService {
   constructor(
+    @inject('FilesRepository')
     private filesRepository: IFilesRepository,
+    @inject('UsersRepository')
     private usersRepository: IUsersRepository,
   ) {}
 

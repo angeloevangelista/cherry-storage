@@ -1,25 +1,22 @@
 import { Router } from 'express';
 import multer from 'multer';
+import { container } from 'tsyringe';
 
 import filesUploadConfig from '@config/filesUpload';
-
-import File from '@modules/files/infra/typeorm/entities/File';
 
 import CreateFileService from '@modules/files/services/CreateFileService';
 import UpdateFileService from '@modules/files/services/UpdateFileService';
 import DeleteFileService from '@modules/files/services/DeleteFileService';
 import FindFileService from '@modules/files/services/FindFileService';
-
-import FilesRepository from '@modules/files/infra/typeorm/repositories/FilesRepository';
-import UsersRepository from '@modules/users/infra/typeorm/repositories/UsersRepository';
+import ListFilesService from '@modules/files/services/ListFilesService';
 
 const filesRouter = Router();
 const upload = multer(filesUploadConfig);
 
 filesRouter.get('/', async (request, response) => {
-  const filesRepository = new FilesRepository();
-  const usersRepository = new UsersRepository();
-  const files = await filesRepository.ListByUserId(request.user.id);
+  const listFilesService = container.resolve(ListFilesService);
+
+  const files = await listFilesService.execute(request.user.id);
 
   files.forEach((file) => {
     file.url = `${process.env.AWS_S3_URL}/storage/${file.name}`;
@@ -29,11 +26,9 @@ filesRouter.get('/', async (request, response) => {
 });
 
 filesRouter.get('/:file_id', async (request, response) => {
-  const filesRepository = new FilesRepository();
-  const usersRepository = new UsersRepository();
   const { file_id } = request.params;
 
-  const findFileService = new FindFileService(filesRepository, usersRepository);
+  const findFileService = container.resolve(FindFileService);
 
   const file = await findFileService.execute({
     user_id: request.user.id,
@@ -44,12 +39,7 @@ filesRouter.get('/:file_id', async (request, response) => {
 });
 
 filesRouter.post('/', upload.single('file'), async (request, response) => {
-  const filesRepository = new FilesRepository();
-  const usersRepository = new UsersRepository();
-  const createFileService = new CreateFileService(
-    filesRepository,
-    usersRepository,
-  );
+  const createFileService = container.resolve(CreateFileService);
 
   const file = await createFileService.execute({
     user_id: request.user.id,
@@ -67,14 +57,9 @@ filesRouter.put(
   '/:file_id',
   upload.single('file'),
   async (request, response) => {
-    const filesRepository = new FilesRepository();
-    const usersRepository = new UsersRepository();
     const { file_id } = request.params;
 
-    const updateFileService = new UpdateFileService(
-      filesRepository,
-      usersRepository,
-    );
+    const updateFileService = container.resolve(UpdateFileService);
 
     const file = await updateFileService.execute({
       existing_file_id: file_id,
@@ -87,14 +72,9 @@ filesRouter.put(
 );
 
 filesRouter.delete('/:file_id', async (request, response) => {
-  const filesRepository = new FilesRepository();
-  const usersRepository = new UsersRepository();
   const { file_id } = request.params;
 
-  const deleteFileService = new DeleteFileService(
-    filesRepository,
-    usersRepository,
-  );
+  const deleteFileService = container.resolve(DeleteFileService);
 
   await deleteFileService.execute({
     user_id: request.user.id,

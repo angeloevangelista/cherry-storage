@@ -1,4 +1,5 @@
 import { validate } from 'uuid';
+import { injectable, inject } from 'tsyringe';
 
 import File from '@modules/files/infra/typeorm/entities/File';
 
@@ -12,9 +13,12 @@ interface Request {
   file_id: string;
 }
 
+@injectable()
 class FindFileService {
   constructor(
+    @inject('FilesRepository')
     private filesRepository: IFilesRepository,
+    @inject('UsersRepository')
     private usersRepository: IUsersRepository,
   ) {}
 

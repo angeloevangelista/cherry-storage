@@ -2,6 +2,7 @@ import 'reflect-metadata';
 import AppError from '@shared/errors/AppError';
 
 import FakeUsersRepository from '../repositories/fakes/FakeUsersRepository';
+import FakeHashProvider from '../providers/HashProvider/fakes/FakeHashProvider';
 
 import AuthenticateUserService from './AuthenticateUserService';
 import CreateUserService from './CreateUserService';
@@ -11,12 +12,14 @@ import User from '../infra/typeorm/entities/User';
 describe('AuthenticateUserService', () => {
   it('should not be able to authenticate an unregistered user', async () => {
     const fakeUsersRepository = new FakeUsersRepository();
+    const fakeHashProvider = new FakeHashProvider();
 
     const email = 'user@domain.com';
     const password = '123456';
 
     const authenticateUserService = new AuthenticateUserService(
       fakeUsersRepository,
+      fakeHashProvider,
     );
 
     expect(
@@ -29,7 +32,12 @@ describe('AuthenticateUserService', () => {
 
   it('should be able to authenticate a registered user', async () => {
     const fakeUsersRepository = new FakeUsersRepository();
-    const createUserService = new CreateUserService(fakeUsersRepository);
+    const fakeHashProvider = new FakeHashProvider();
+
+    const createUserService = new CreateUserService(
+      fakeUsersRepository,
+      fakeHashProvider,
+    );
 
     const email = 'user@domain.com';
     const password = '123456';
@@ -43,6 +51,7 @@ describe('AuthenticateUserService', () => {
 
     const authenticateUserService = new AuthenticateUserService(
       fakeUsersRepository,
+      fakeHashProvider,
     );
 
     const { token, user } = await authenticateUserService.execute({
@@ -52,13 +61,17 @@ describe('AuthenticateUserService', () => {
 
     expect(user).toBeInstanceOf(User);
     expect(user.email).toBe(email);
-    expect(user.password === password).toBeFalsy();
     expect(token.split('.').length === 3).toBeTruthy();
   });
 
   it('should not be able to authenticate a user with wrong email', async () => {
     const fakeUsersRepository = new FakeUsersRepository();
-    const createUserService = new CreateUserService(fakeUsersRepository);
+    const fakeHashProvider = new FakeHashProvider();
+
+    const createUserService = new CreateUserService(
+      fakeUsersRepository,
+      fakeHashProvider,
+    );
 
     const email = 'user@domain.com';
     const password = '123456';
@@ -72,6 +85,7 @@ describe('AuthenticateUserService', () => {
 
     const authenticateUserService = new AuthenticateUserService(
       fakeUsersRepository,
+      fakeHashProvider,
     );
 
     expect(
@@ -84,7 +98,12 @@ describe('AuthenticateUserService', () => {
 
   it('should not be able to authenticate a user with wrong password', async () => {
     const fakeUsersRepository = new FakeUsersRepository();
-    const createUserService = new CreateUserService(fakeUsersRepository);
+    const fakeHashProvider = new FakeHashProvider();
+
+    const createUserService = new CreateUserService(
+      fakeUsersRepository,
+      fakeHashProvider,
+    );
 
     const email = 'user@domain.com';
     const password = '123456';
@@ -98,6 +117,7 @@ describe('AuthenticateUserService', () => {
 
     const authenticateUserService = new AuthenticateUserService(
       fakeUsersRepository,
+      fakeHashProvider,
     );
 
     expect(
@@ -110,7 +130,12 @@ describe('AuthenticateUserService', () => {
 
   it('should not be able to authenticate a user with wrong credentials', async () => {
     const fakeUsersRepository = new FakeUsersRepository();
-    const createUserService = new CreateUserService(fakeUsersRepository);
+    const fakeHashProvider = new FakeHashProvider();
+
+    const createUserService = new CreateUserService(
+      fakeUsersRepository,
+      fakeHashProvider,
+    );
 
     const email = 'user@domain.com';
     const password = '123456';
@@ -124,6 +149,7 @@ describe('AuthenticateUserService', () => {
 
     const authenticateUserService = new AuthenticateUserService(
       fakeUsersRepository,
+      fakeHashProvider,
     );
 
     expect(

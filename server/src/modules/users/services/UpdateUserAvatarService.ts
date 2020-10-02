@@ -8,13 +8,11 @@ import UploadUserAvatarS3Service from '@modules/files/infra/S3/UploadUserAvatar'
 import AppError from '@shared/errors/AppError';
 import IUsersRepository from '@modules/users/repositories/IUsersRepository';
 
-interface Request {
+interface IRequest {
   user_id: string;
   avatarFilename: string;
-  avatarMimeType: string;
+  avatarMimeType: 'image/jpeg' | 'image/png';
 }
-
-const validMimetypes = ['image/jpeg', 'image/png'];
 
 @injectable()
 class UpdateUserAvatarService {
@@ -27,11 +25,7 @@ class UpdateUserAvatarService {
     user_id,
     avatarFilename,
     avatarMimeType,
-  }: Request): Promise<User> {
-    if (!validMimetypes.includes(avatarMimeType)) {
-      throw new AppError('Invalid image format.');
-    }
-
+  }: IRequest): Promise<User> {
     const user = await this.usersRepository.findById(user_id);
 
     if (!user) {

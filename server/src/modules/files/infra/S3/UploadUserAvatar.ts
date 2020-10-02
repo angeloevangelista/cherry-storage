@@ -6,7 +6,7 @@ import S3 from 'aws-sdk/clients/s3';
 import S3Config from '@config/S3';
 import avatarsUploadConfig from '@config/avatarsUpload';
 
-interface UploadUserAvatarParams {
+interface IUploadUserAvatarParams {
   s3Path: string;
   fileName: string;
   mimeType: string;
@@ -17,7 +17,7 @@ AWS.config.update({ region: S3Config.region });
 const s3 = new AWS.S3(S3Config);
 
 class UploadUserAvatar {
-  execute({ s3Path, fileName, mimeType }: UploadUserAvatarParams): void {
+  execute({ s3Path, fileName, mimeType }: IUploadUserAvatarParams): void {
     const fileContent = fs.readFileSync(
       path.join(avatarsUploadConfig.directory, fileName),
     );

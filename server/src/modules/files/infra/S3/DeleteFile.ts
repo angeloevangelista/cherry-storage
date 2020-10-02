@@ -6,7 +6,7 @@ import S3 from 'aws-sdk/clients/s3';
 import S3Config from '@config/S3';
 import filesUploadConfig from '@config/filesUpload';
 
-interface DeleteFileParams {
+interface IDeleteFileParams {
   s3Path: string;
   fileName: string;
 }
@@ -37,7 +37,7 @@ const s3delete = (params: S3.Types.DeleteObjectRequest, fileName: string) => {
 };
 
 class DeleteFile {
-  execute({ s3Path, fileName }: DeleteFileParams): void {
+  execute({ s3Path, fileName }: IDeleteFileParams): void {
     const params: S3.Types.PutObjectRequest = {
       Bucket: S3Config.name,
       Key: `${s3Path}/${fileName}`,

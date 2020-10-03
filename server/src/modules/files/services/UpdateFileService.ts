@@ -3,15 +3,13 @@ import { injectable, inject } from 'tsyringe';
 
 import File from '@modules/files/infra/typeorm/entities/File';
 
-import UpdateFileS3Service from '@modules/files/infra/S3/UpdateFile';
-import DeleteFileS3Service from '@modules/files/infra/S3/DeleteFile';
-
 import AppError from '@shared/errors/AppError';
 
 import IFilesRepository from '@modules/files/repositories/IFilesRepository';
 import IUsersRepositories from '@modules/users/repositories/IUsersRepository';
+import IStorageProvider from '@shared/container/providers/StorageProvider/models/IStorageProvider';
 
-interface Request {
+interface IRequest {
   user_id: string;
   existing_file_id: string;
   uploadedFile: {
@@ -26,15 +24,19 @@ class UpdateFileService {
   constructor(
     @inject('FilesRepository')
     private filesRepository: IFilesRepository,
+
     @inject('UsersRepository')
     private usersRepository: IUsersRepositories,
+
+    @inject('StorageProvider')
+    private storageProvider: IStorageProvider,
   ) {}
 
   public async execute({
     user_id,
     existing_file_id,
     uploadedFile,
-  }: Request): Promise<File> {
+  }: IRequest): Promise<File> {
     if (!validate(existing_file_id)) {
       throw new AppError('Invalid file_id.');
     }
@@ -55,21 +57,29 @@ class UpdateFileService {
       throw new AppError('You can update only your own files.');
     }
 
-    const updateFileS3Service = new UpdateFileS3Service();
-
-    updateFileS3Service.execute({
+    const {
+      $response: { error: updateFileError },
+    } = await this.storageProvider.updateFile({
       s3Path: 'storage',
       fileName: uploadedFile.filename,
       mimeType: uploadedFile.mimetype,
     });
 
-    if (uploadedFile.filename !== file.name) {
-      const deleteFileS3Service = new DeleteFileS3Service();
+    if (updateFileError) {
+      throw new AppError('An error occurred while updating file.');
+    }
 
-      deleteFileS3Service.execute({
+    if (uploadedFile.filename !== file.name) {
+      const {
+        $response: { error: deleteFileError },
+      } = await this.storageProvider.deleteFile({
         s3Path: 'storage',
         fileName: file.name,
       });
+
+      if (deleteFileError) {
+        throw new AppError('An error occurred while deleting file.');
+      }
     }
 
     file.name = uploadedFile.filename;

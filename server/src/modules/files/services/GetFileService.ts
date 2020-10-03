@@ -7,10 +7,9 @@ import { injectable, inject } from 'tsyringe';
 import S3Config from '@config/S3';
 import AppError from '@shared/errors/AppError';
 
-import GetFileS3Service from '@modules/files/infra/S3/GetFile';
-
 import IFilesRepository from '@modules/files/repositories/IFilesRepository';
 import IUsersRepository from '@modules/users/repositories/IUsersRepository';
+import IStorageProvider from '@shared/container/providers/StorageProvider/models/IStorageProvider';
 
 interface IRequest {
   file_id: string;
@@ -28,8 +27,12 @@ class GetFileService {
   constructor(
     @inject('FilesRepository')
     private filesRepository: IFilesRepository,
+
     @inject('UsersRepository')
     private usersRepository: IUsersRepository,
+
+    @inject('StorageProvider')
+    private storageProvider: IStorageProvider,
   ) {}
 
   public async execute({
@@ -48,9 +51,7 @@ class GetFileService {
 
     const file = await this.filesRepository.findById(file_id);
 
-    const getFileS3Service = new GetFileS3Service();
-
-    const s3file = await getFileS3Service.execute({
+    const s3file = await this.storageProvider.loadFile({
       fileName: file.name,
       s3Path: 'storage',
     });

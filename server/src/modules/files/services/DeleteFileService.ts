@@ -1,14 +1,13 @@
 import { injectable, inject } from 'tsyringe';
 import { validate } from 'uuid';
 
-import DeleteFileS3Service from '@modules/files/infra/S3/DeleteFile';
-
 import AppError from '@shared/errors/AppError';
 
 import IUsersRepository from '@modules/users/repositories/IUsersRepository';
 import IFilesRepository from '@modules/files/repositories/IFilesRepository';
+import IStorageProvider from '@shared/container/providers/StorageProvider/models/IStorageProvider';
 
-interface Request {
+interface IRequest {
   user_id: string;
   file_id: string;
 }
@@ -18,11 +17,15 @@ class DeleteFileService {
   constructor(
     @inject('FilesRepository')
     private filesRepository: IFilesRepository,
+
     @inject('UsersRepository')
     private usersRepository: IUsersRepository,
+
+    @inject('StorageProvider')
+    private storageProvider: IStorageProvider,
   ) {}
 
-  public async execute({ user_id, file_id }: Request): Promise<void> {
+  public async execute({ user_id, file_id }: IRequest): Promise<void> {
     if (!validate(file_id)) {
       throw new AppError('Invalid file_id.');
     }
@@ -43,12 +46,16 @@ class DeleteFileService {
       throw new AppError('You can delete only your own files.');
     }
 
-    const deleteFileS3Service = new DeleteFileS3Service();
-
-    deleteFileS3Service.execute({
+    const {
+      $response: { error },
+    } = await this.storageProvider.deleteFile({
       fileName: file.name,
       s3Path: 'storage',
     });
+
+    if (error) {
+      throw new AppError('An error occurred while deleting file.');
+    }
 
     await this.filesRepository.delete(file);
   }

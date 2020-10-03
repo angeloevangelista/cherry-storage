@@ -4,7 +4,7 @@ import S3 from 'aws-sdk/clients/s3';
 import { PromiseResult } from 'aws-sdk/lib/request';
 import S3Config from '@config/S3';
 
-interface GetFileParams {
+interface IGetFileParams {
   s3Path: string;
   fileName: string;
 }
@@ -17,7 +17,7 @@ class GetFile {
   async execute({
     s3Path,
     fileName,
-  }: GetFileParams): Promise<PromiseResult<S3.GetObjectOutput, AWS.AWSError>> {
+  }: IGetFileParams): Promise<PromiseResult<S3.GetObjectOutput, AWS.AWSError>> {
     const s3file = await s3
       .getObject({
         Bucket: S3Config.name,

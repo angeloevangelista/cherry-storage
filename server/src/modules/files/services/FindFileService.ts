@@ -8,7 +8,7 @@ import AppError from '@shared/errors/AppError';
 import IFilesRepository from '@modules/files/repositories/IFilesRepository';
 import IUsersRepository from '@modules/users/repositories/IUsersRepository';
 
-interface Request {
+interface IRequest {
   user_id: string;
   file_id: string;
 }
@@ -22,7 +22,7 @@ class FindFileService {
     private usersRepository: IUsersRepository,
   ) {}
 
-  public async execute({ user_id, file_id }: Request): Promise<File> {
+  public async execute({ user_id, file_id }: IRequest): Promise<File> {
     if (!validate(file_id)) {
       throw new AppError('Invalid file_id.');
     }

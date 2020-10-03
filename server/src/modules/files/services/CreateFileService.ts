@@ -2,12 +2,11 @@ import { injectable, inject } from 'tsyringe';
 
 import AppError from '@shared/errors/AppError';
 
-import UploadFileS3Service from '@modules/files/infra/S3/UploadFile';
-
 import File from '@modules/files/infra/typeorm/entities/File';
 
 import IUsersRepository from '@modules/users/repositories/IUsersRepository';
 import IFilesRepository from '@modules/files/repositories/IFilesRepository';
+import IStorageProvider from '@shared/container/providers/StorageProvider/models/IStorageProvider';
 
 interface IRequest {
   user_id: string;
@@ -23,8 +22,12 @@ class CreateFileService {
   constructor(
     @inject('FilesRepository')
     private filesRepository: IFilesRepository,
+
     @inject('UsersRepository')
     private usersRepository: IUsersRepository,
+
+    @inject('StorageProvider')
+    private storageProvider: IStorageProvider,
   ) {}
 
   public async execute({ user_id, uploadedFile }: IRequest): Promise<File> {
@@ -41,13 +44,17 @@ class CreateFileService {
       mime_type: uploadedFile.mimeType,
     });
 
-    const uploadFileS3Service = new UploadFileS3Service();
-
-    uploadFileS3Service.execute({
+    const {
+      $response: { error },
+    } = await this.storageProvider.saveFile({
       s3Path: 'storage',
       fileName: file.name,
       mimeType: file.mime_type,
     });
+
+    if (error) {
+      throw new AppError('An error occurred while saving file.');
+    }
 
     file.url = `${process.env.AWS_S3_URL}/storage/${file.name}`;
 

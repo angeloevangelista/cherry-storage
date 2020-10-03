@@ -2,11 +2,9 @@ import { injectable, inject } from 'tsyringe';
 
 import User from '@modules/users/infra/typeorm/entities/User';
 
-import DeleteFileS3Service from '@modules/files/infra/S3/DeleteFile';
-import UploadUserAvatarS3Service from '@modules/files/infra/S3/UploadUserAvatar';
-
 import AppError from '@shared/errors/AppError';
 import IUsersRepository from '@modules/users/repositories/IUsersRepository';
+import IStorageProvider from '@shared/container/providers/StorageProvider/models/IStorageProvider';
 
 interface IRequest {
   user_id: string;
@@ -19,6 +17,9 @@ class UpdateUserAvatarService {
   constructor(
     @inject('UsersRepository')
     private usersRepository: IUsersRepository,
+
+    @inject('StorageProvider')
+    private storageProvider: IStorageProvider,
   ) {}
 
   public async execute({
@@ -33,25 +34,48 @@ class UpdateUserAvatarService {
     }
 
     if (user.avatar) {
-      const deleteFileS3Service = new DeleteFileS3Service();
-
-      deleteFileS3Service.execute({
+      const {
+        $response: { error: deleteFileError },
+      } = await this.storageProvider.deleteFile({
         s3Path: 'avatars',
         fileName: user.avatar,
       });
+
+      if (deleteFileError) {
+        throw new AppError('An error occurred while deleting file.');
+      }
     }
 
     user.avatar = avatarFilename;
 
     await this.usersRepository.update(user);
 
-    const uploadUserAvatarS3Service = new UploadUserAvatarS3Service();
+    if (user.avatar) {
+      const {
+        $response: { error: updateFileError },
+      } = await this.storageProvider.updateFile({
+        s3Path: 'avatars',
+        fileName: user.avatar,
+        mimeType: avatarMimeType,
+        isAvatar: true,
+      });
 
-    uploadUserAvatarS3Service.execute({
-      s3Path: 'avatars',
-      fileName: user.avatar,
-      mimeType: avatarMimeType,
-    });
+      if (updateFileError) {
+        throw new AppError('An error ocurred while updating avatar.');
+      }
+    } else {
+      const {
+        $response: { error: saveFileError },
+      } = await this.storageProvider.saveFile({
+        s3Path: 'avatars',
+        fileName: user.avatar,
+        mimeType: avatarMimeType,
+      });
+
+      if (saveFileError) {
+        throw new AppError('An error ocurred while saving avatar.');
+      }
+    }
 
     user.avatar_url = `${process.env.AWS_S3_URL}/avatars/${user.avatar}`;
 

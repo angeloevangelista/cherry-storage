@@ -1,10 +1,8 @@
-import AWS, { AWSError } from 'aws-sdk';
 import { GetObjectOutput } from 'aws-sdk/clients/s3';
 import { PromiseResult } from 'aws-sdk/lib/request';
 import { validate } from 'uuid';
 import { injectable, inject } from 'tsyringe';
 
-import S3Config from '@config/S3';
 import AppError from '@shared/errors/AppError';
 
 import IFilesRepository from '@modules/files/repositories/IFilesRepository';
@@ -15,12 +13,6 @@ interface IRequest {
   file_id: string;
   user_id: string;
 }
-
-AWS.config.update({
-  region: S3Config.region,
-  accessKeyId: S3Config.accessKeyId,
-  secretAccessKey: S3Config.secretAccessKey,
-});
 
 @injectable()
 class GetFileService {
@@ -38,7 +30,7 @@ class GetFileService {
   public async execute({
     file_id,
     user_id,
-  }: IRequest): Promise<PromiseResult<GetObjectOutput, AWSError>> {
+  }: IRequest): Promise<PromiseResult<GetObjectOutput, Error>> {
     if (!validate(file_id)) {
       throw new AppError('Invalid file_id.');
     }

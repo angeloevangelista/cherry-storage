@@ -1,4 +1,3 @@
-import { AWSError } from 'aws-sdk';
 import {
   CreateBucketOutput,
   GetObjectOutput,
@@ -16,7 +15,6 @@ export interface IUpdateFileDTO {
   s3Path: string;
   fileName: string;
   mimeType: string;
-  isAvatar?: boolean;
 }
 
 export interface IDeleteFileDTO {
@@ -32,19 +30,19 @@ export interface ILoadFileDTO {
 export interface IStorageProvider {
   saveFile(
     params: ISaveFileDTO,
-  ): Promise<PromiseResult<PutObjectOutput, AWSError>>;
+  ): Promise<PromiseResult<PutObjectOutput, Error>>;
 
   updateFile(
     params: IUpdateFileDTO,
-  ): Promise<PromiseResult<PutObjectOutput, AWSError>>;
+  ): Promise<PromiseResult<PutObjectOutput, Error>>;
 
   deleteFile(
     params: IDeleteFileDTO,
-  ): Promise<PromiseResult<CreateBucketOutput, AWSError>>;
+  ): Promise<PromiseResult<CreateBucketOutput, Error>>;
 
   loadFile(
     params: ILoadFileDTO,
-  ): Promise<PromiseResult<GetObjectOutput, AWSError>>;
+  ): Promise<PromiseResult<GetObjectOutput, Error>>;
 }
 
 export default IStorageProvider;

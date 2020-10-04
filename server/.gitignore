@@ -3,6 +3,5 @@ dist
 
 .env
 
-files/avatars/*
-files/storage/*
+tmp/*
 !**/.gitkeep

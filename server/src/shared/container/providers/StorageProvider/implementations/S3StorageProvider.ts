@@ -5,8 +5,7 @@ import S3, { CreateBucketOutput, PutObjectOutput } from 'aws-sdk/clients/s3';
 import { PromiseResult } from 'aws-sdk/lib/request';
 
 import S3Config from '@config/S3';
-import filesUploadConfig from '@config/filesUpload';
-import avatarsUploadConfig from '@config/avatarsUpload';
+import uploadConfig from '@config/upload';
 
 import IStorageProvider, {
   IDeleteFileDTO,
@@ -26,7 +25,7 @@ class S3StorageProvider implements IStorageProvider {
     const s3 = new AWS.S3(S3Config);
 
     const fileContent = fs.readFileSync(
-      path.join(filesUploadConfig.directory, fileName),
+      path.join(uploadConfig.directory, fileName),
     );
 
     const params: S3.Types.PutObjectRequest = {
@@ -42,7 +41,7 @@ class S3StorageProvider implements IStorageProvider {
           throw err;
         }
 
-        const filePath = path.join(filesUploadConfig.directory, fileName);
+        const filePath = path.join(uploadConfig.directory, fileName);
 
         try {
           await fs.promises.stat(filePath);
@@ -61,17 +60,14 @@ class S3StorageProvider implements IStorageProvider {
     fileName,
     mimeType,
     s3Path,
-    isAvatar,
   }: IUpdateFileDTO): Promise<PromiseResult<PutObjectOutput, AWSError>> {
     AWS.config.update({ region: S3Config.region });
 
     const s3 = new AWS.S3(S3Config);
 
-    const pathToUse = isAvatar
-      ? avatarsUploadConfig.directory
-      : filesUploadConfig.directory;
-
-    const fileContent = fs.readFileSync(path.join(pathToUse, fileName));
+    const fileContent = fs.readFileSync(
+      path.join(uploadConfig.directory, fileName),
+    );
 
     const params: S3.Types.PutObjectRequest = {
       Bucket: S3Config.name,
@@ -86,7 +82,7 @@ class S3StorageProvider implements IStorageProvider {
           throw err;
         }
 
-        const filePath = path.join(pathToUse, fileName);
+        const filePath = path.join(uploadConfig.directory, fileName);
 
         try {
           await fs.promises.stat(filePath);
@@ -125,7 +121,7 @@ class S3StorageProvider implements IStorageProvider {
                 throw err;
               }
 
-              const filePath = path.join(filesUploadConfig.directory, fileName);
+              const filePath = path.join(uploadConfig.directory, fileName);
 
               try {
                 await fs.promises.stat(filePath);

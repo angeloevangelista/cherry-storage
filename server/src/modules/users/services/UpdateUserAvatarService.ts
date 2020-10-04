@@ -57,7 +57,6 @@ class UpdateUserAvatarService {
         s3Path: 'avatars',
         fileName: user.avatar,
         mimeType: avatarMimeType,
-        isAvatar: true,
       });
 
       if (updateFileError) {

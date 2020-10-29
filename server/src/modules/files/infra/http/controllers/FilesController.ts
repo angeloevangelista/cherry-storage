@@ -48,10 +48,7 @@ class FilesController {
     return response.status(201).json(file);
   }
 
-  public async update(
-    request: Request,
-    response: Response,
-  ): Promise<Response> {
+  public async update(request: Request, response: Response): Promise<Response> {
     const { file_id } = request.params;
 
     const updateFileService = container.resolve(UpdateFileService);
@@ -65,10 +62,7 @@ class FilesController {
     return response.json(file);
   }
 
-  public async delete(
-    request: Request,
-    response: Response,
-  ): Promise<Response> {
+  public async delete(request: Request, response: Response): Promise<Response> {
     const { file_id } = request.params;
 
     const deleteFileService = container.resolve(DeleteFileService);

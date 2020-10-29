@@ -52,6 +52,17 @@ class UpdateUserAvatarService {
 
     if (user.avatar) {
       const {
+        $response: { error: deleteFileError },
+      } = await this.storageProvider.deleteFile({
+        s3Path: 'avatars',
+        fileName: user.avatar,
+      });
+
+      if (deleteFileError) {
+        throw new AppError('An error ocurred while deleting existent avatar.');
+      }
+
+      const {
         $response: { error: updateFileError },
       } = await this.storageProvider.updateFile({
         s3Path: 'avatars',
